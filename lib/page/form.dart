@@ -1,6 +1,6 @@
-import 'package:test_app/main.dart';
 import 'package:flutter/material.dart';
-
+import 'package:test_app/main.dart';
+import 'package:test_app/page/to_do_page.dart';
 
 class MyFormPage extends StatefulWidget {
   const MyFormPage({super.key});
@@ -8,8 +8,6 @@ class MyFormPage extends StatefulWidget {
   @override
   State<MyFormPage> createState() => _MyFormPageState();
 }
-
-
 
 class _MyFormPageState extends State<MyFormPage> {
   final _formKey = GlobalKey<FormState>();
@@ -29,6 +27,43 @@ class _MyFormPageState extends State<MyFormPage> {
       appBar: AppBar(
         title: Text('Form'),
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            // Menambahkan clickable menu
+            ListTile(
+              title: const Text('Counter'),
+              onTap: () {
+                // Route menu ke halaman utama
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('Form'),
+              onTap: () {
+                // Route menu ke halaman form
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyFormPage()),
+                );
+              },
+            ),
+            ListTile(
+              title: const Text('To Do'),
+              onTap: () {
+                // Route menu ke halaman to do
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ToDoPage()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -41,8 +76,43 @@ class _MyFormPageState extends State<MyFormPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  // Menggunakan padding sebesar 8 pixels
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Contoh: Pak Dengklek",
+                      labelText: "Nama Lengkap",
+                      // Menambahkan icon agar lebih intuitif
+                      icon: const Icon(Icons.people),
+                      // Menambahkan circular border agar lebih rapi
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    // Menambahkan behavior saat nama diketik
+                    onChanged: (String? value) {
+                      setState(() {
+                        _namaLengkap = value!;
+                      });
+                    },
+                    // Menambahkan behavior saat data disimpan
+                    onSaved: (String? value) {
+                      setState(() {
+                        _namaLengkap = value!;
+                      });
+                    },
+                    // Validator sebagai validasi form
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Nama lengkap tidak boleh kosong!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
                 const ListTile(
-                  leading:  Icon(Icons.school),
+                  leading: Icon(Icons.school),
                   title: Text("Jenjang"),
                 ),
                 CheckboxListTile(
@@ -51,8 +121,9 @@ class _MyFormPageState extends State<MyFormPage> {
                   onChanged: (bool? value) {
                     setState(() {
                       jenjangSarjana = value!;
-                      if (value){
-                        jenjangMagister = jenjangDiploma = jenjangDoktor = false;
+                      if (value) {
+                        jenjangMagister =
+                            jenjangDiploma = jenjangDoktor = false;
                       }
                     });
                   },
@@ -63,8 +134,9 @@ class _MyFormPageState extends State<MyFormPage> {
                   onChanged: (bool? value) {
                     setState(() {
                       jenjangDiploma = value!;
-                      if (value){
-                        jenjangMagister = jenjangSarjana = jenjangDoktor = false;
+                      if (value) {
+                        jenjangMagister =
+                            jenjangSarjana = jenjangDoktor = false;
                       }
                     });
                   },
@@ -75,7 +147,7 @@ class _MyFormPageState extends State<MyFormPage> {
                   onChanged: (bool? value) {
                     setState(() {
                       jenjangMagister = value!;
-                      if (value){
+                      if (value) {
                         jenjangDiploma = jenjangSarjana = jenjangDoktor = false;
                       }
                     });
@@ -87,8 +159,9 @@ class _MyFormPageState extends State<MyFormPage> {
                   onChanged: (bool? value) {
                     setState(() {
                       jenjangDoktor = value!;
-                      if (value){
-                        jenjangMagister = jenjangSarjana = jenjangDiploma = false;
+                      if (value) {
+                        jenjangMagister =
+                            jenjangSarjana = jenjangDiploma = false;
                       }
                     });
                   },
@@ -163,28 +236,29 @@ class _MyFormPageState extends State<MyFormPage> {
                             elevation: 15,
                             child: Container(
                               child: ListView(
-                                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                                padding:
+                                    const EdgeInsets.only(top: 20, bottom: 20),
                                 shrinkWrap: true,
                                 children: <Widget>[
                                   Center(child: const Text('Informasi Data')),
                                   SizedBox(height: 20),
                                   // TODO: Munculkan informasi yang didapat dari form
-                                  // Text(
-                                  //   'Judul: ' + _namaLengkap,
-                                  // ),
-                                  if (jenjangSarjana == true)...[
+                                  Text(
+                                    'nama: ' + _namaLengkap,
+                                  ),
+                                  if (jenjangSarjana == true) ...[
                                     Text(
                                       'Jenjang: Sarjana',
                                     ),
-                                  ]else if (jenjangDiploma == true)...[
+                                  ] else if (jenjangDiploma == true) ...[
                                     Text(
                                       'Jenjang: Diploma',
                                     ),
-                                  ] else if (jenjangMagister == true)...[
+                                  ] else if (jenjangMagister == true) ...[
                                     Text(
                                       'Jenjang: Magister',
                                     ),
-                                  ] else...[
+                                  ] else ...[
                                     Text(
                                       'Jenjang: Doktor',
                                     ),
@@ -210,7 +284,6 @@ class _MyFormPageState extends State<MyFormPage> {
                     }
                   },
                 ),
-
               ],
             ),
           ),
@@ -219,4 +292,3 @@ class _MyFormPageState extends State<MyFormPage> {
     );
   }
 }
-
